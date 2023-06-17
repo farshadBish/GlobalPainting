@@ -1,5 +1,6 @@
 import './App.css'
 import Blank from './components/Blank'
+import Inputs from './components/Inputs'
 import TopNavbar from './components/TopNavbar'
 
 function App() {
@@ -10,7 +11,8 @@ function App() {
   </div>
       <div className='app gap-2 mx-auto px-40'>
         <TopNavbar/> 
-        <Blank/> 
+        <Blank/>
+        <Inputs/>
       </div>
       </main>
   )

@@ -9,11 +9,11 @@ function App() {
     <div className="main">
     <div className="gradient"/>
   </div>
-      <div className='app gap-2 mx-auto px-40'>
+      <div className='app gap-2 px-20'>
         <TopNavbar/> 
         <Blank/>
-        <Inputs/>
       </div>
+        <Inputs/>
       </main>
   )
 }

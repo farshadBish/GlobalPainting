@@ -50,17 +50,17 @@ const Blank = () => {
     context.lineCap = "round";
     context.lineWidth = 8;
     contextRef.current = context;
-    // fetchHistory();
+    fetchHistory();
 
   }, [])
 
-  // useEffect(()=>{
-  //   history.forEach(element => {
-  //     contextRef.current.strokeStyle = 'black'
-  //     contextRef.current.lineTo(...element, );
-  //     contextRef.current.stroke();
-  //   });
-  // },[history])
+  useEffect(()=>{
+    history.forEach(element => {
+      contextRef.current.strokeStyle = 'black'
+      contextRef.current.lineTo(...element, );
+      contextRef.current.stroke();
+    });
+  },[history])
   
 
 

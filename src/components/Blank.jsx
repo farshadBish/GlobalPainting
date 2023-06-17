@@ -66,7 +66,7 @@ const Blank = () => {
 
 
   const startDrawing = (event) => {
-    // event.preventDefault();
+    event.preventDefault();
     console.log("startdrawing event:");
     const {offsetX, offsetY} = event.nativeEvent;
     console.log(offsetX,offsetY);
@@ -112,12 +112,12 @@ const Blank = () => {
     className="bg-white w-full h-full rounded-sm shadow-2xl"
     id="paintingZone"
     style={{touchAction:'none'}}
-    onMouseDown={startDrawing}
+    onMouseDown={startDrawing}  
     onTouchStart={startDrawing}
     onMouseUp={endDrawing}
     onTouchEnd={endDrawing}
     onMouseMove={draw}
-    onTouchMove={drawMobile}
+    onTouchMove={(e)=>drawMobile(e)}
     ref={canvasRef}
     ></canvas>
         </div>

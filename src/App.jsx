@@ -8,7 +8,7 @@ function App() {
     <div className="main">
     <div className="gradient"/>
   </div>
-      <div className='app gap-2 mx-auto bor box-content'>
+      <div className='app gap-2 mx-auto px-40'>
         <TopNavbar/> 
         <Blank/> 
       </div>

@@ -24,20 +24,32 @@ const Blank = () => {
     }
   }
 
+  function resizeCanvas(canvas) {
+    const { width, height } = canvas.getBoundingClientRect()
+    
+    if (canvas.width !== width || canvas.height !== height) {
+      const { devicePixelRatio:ratio=1 } = window
+      const context = canvas.getContext('2d')
+      canvas.width = width*ratio
+      canvas.height = height*ratio
+      context.scale(ratio, ratio)
+      return true
+    }
+
+    return false
+  }
+
   useEffect( () => {
-    const canvasZone = document.getElementById("paintingZone")
-    console.log(canvasZone);
     const canvas = canvasRef.current;
-    canvas.width = canvasZone.width;
-    canvas.height = canvasZone.height;
+    const context = canvas.getContext("2d");
+    resizeCanvas(canvas);
+    // context.fillRect(1000, 1000, context.canvas.width, context.canvas.height)
     console.log("canvas width : ",canvas.width);
     // canvas.style.height = `69.6vh`;
     // canvas.style.width = `60vw`;
-    const context = canvas.getContext("2d");
     // context.scale(2,2);
     context.lineCap = "round";
-    context.strokeStyle = "black";
-    context.lineWidth = 5;
+    context.lineWidth = 8;
     contextRef.current = context;
     fetchHistory();
 
@@ -45,6 +57,7 @@ const Blank = () => {
 
   useEffect(()=>{
     history.forEach(element => {
+      contextRef.current.strokeStyle = 'black'
       contextRef.current.lineTo(...element, );
       contextRef.current.stroke();
     });
@@ -52,13 +65,18 @@ const Blank = () => {
   
 
 
-  const startDrawing = ({nativeEvent}) => {
-    const {offsetX, offsetY} = nativeEvent;
+  const startDrawing = (event) => {
+    // event.preventDefault();
+    console.log("startdrawing event:");
+    const {offsetX, offsetY} = event.nativeEvent;
+    console.log(offsetX,offsetY);
     contextRef.current.beginPath()
     contextRef.current.moveTo(offsetX,offsetY)
     setIsDrawing(true)
+
   }
   const endDrawing= () => {
+    console.log("enddrawing event:");
     contextRef.current.closePath();
     setIsDrawing(false);
 
@@ -67,25 +85,39 @@ const Blank = () => {
     if(!isDrawing){
       return 
     }
+    console.log("drawing event:");
     const {offsetX , offsetY} = nativeEvent;
     contextRef.current.lineTo(offsetX,offsetY);
+    contextRef.current.strokeStyle = 'red';
     contextRef.current.stroke();
     console.log(offsetX,offsetY);
   }
 
+  const drawMobile = (event) => {
+    const elem = document.getElementById("paintingZone")
+    const elemz = elem.getBoundingClientRect()
+    console.log("elemz:",elemz);
+    const offsetX = event.touches[0].clientX;
+    const offsetY = event.touches[0].clientY - elemz.top;
+    console.log(contextRef.current.offsetTop,"someshit");
+    contextRef.current.lineTo(offsetX,offsetY);
+    contextRef.current.strokeStyle = 'red';
+    contextRef.current.stroke();
+    // dot(offsetX,offsetY);
+  }
+
   return (
-    <div className="">
+    <div className="d-flex justify-center w-full h-[65vh]">
     <canvas 
-    className="bg-white  rounded-sm shadow-2xl"
+    className="bg-white w-full h-full rounded-sm shadow-2xl"
     id="paintingZone"
-    width={1050}
-    height={500}
+    style={{touchAction:'none'}}
     onMouseDown={startDrawing}
     onTouchStart={startDrawing}
     onMouseUp={endDrawing}
     onTouchEnd={endDrawing}
     onMouseMove={draw}
-    onTouchMove={draw}
+    onTouchMove={drawMobile}
     ref={canvasRef}
     ></canvas>
         </div>

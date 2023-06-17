@@ -48,8 +48,13 @@
   filter: invert(0%);
 }
 
-@media screen and (max-width: 640px) {
-  .main {
-    padding: 0;
+@media screen and (max-width: 840px) {
+  .app {
+    padding: 0 3rem 0 3rem;
+  }
+}
+@media screen and (max-width: 570px) {
+  .app {
+    padding: 0 1rem 0 1rem;
   }
 }

@@ -89,7 +89,6 @@ const Blank = () => {
     }
     const {offsetX , offsetY} = nativeEvent;
     contextRef.current.lineTo(offsetX,offsetY);
-    console.log(Number(statesOfDrawAttributes.lineWidth),"this is linewidth");
     contextRef.current.lineWidth = Number(statesOfDrawAttributes.lineWidth);
     contextRef.current.strokeStyle = statesOfDrawAttributes.color;
     contextRef.current.stroke();

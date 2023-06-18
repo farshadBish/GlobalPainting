@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react"
+import { useContext,useEffect, useState } from "react"
 import { useRef } from "react"
+import { StateContext } from "../context/PaintingContext";
 
 const Blank = () => {
+
+  const statesOfDrawAttributes = useContext(StateContext);
 
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
   const [isDrawing,setIsDrawing] = useState(false);
   const [history,setHistory] = useState([])
+  const [paint,setPaint] = useState([])
 
   const fetchHistory = async () => {
     try {
@@ -29,7 +33,6 @@ const Blank = () => {
     if (canvas.width !== width || canvas.height !== height) {
       const { devicePixelRatio:ratio=1 } = window
       const context = canvas.getContext('2d')
-      console.log(devicePixelRatio,ratio,"ratios");
       canvas.width = width*ratio
       canvas.height = height*ratio
       context.scale(ratio, ratio)
@@ -48,22 +51,26 @@ const Blank = () => {
     // canvas.style.width = `60vw`;
     // context.scale(2,2);
     context.lineCap = "round";
-    context.lineWidth = 8;
     contextRef.current = context;
     fetchHistory();
 
   }, [])
-
+  // useEffect(()=>{
+  // },[paint])
   useEffect(()=>{
     history.forEach(element => {
-      contextRef.current.strokeStyle = 'black'
-      contextRef.current.lineTo(...element, );
+      contextRef.current.strokeStyle = element.color
+      contextRef.current.lineWidth = element.lineWidth;
+      contextRef.current.lineTo(element.x,element.y );
       contextRef.current.stroke();
     });
   },[history])
-  
 
 
+  // setInterval(async () => {
+  //      setPaint([])
+  //      console.log("done");
+  // }, 500);
   const startDrawing = (event) => {
     const {offsetX, offsetY} = event.nativeEvent;
     contextRef.current.beginPath()
@@ -82,8 +89,16 @@ const Blank = () => {
     }
     const {offsetX , offsetY} = nativeEvent;
     contextRef.current.lineTo(offsetX,offsetY);
-    contextRef.current.strokeStyle = 'red';
+    console.log(Number(statesOfDrawAttributes.lineWidth),"this is linewidth");
+    contextRef.current.lineWidth = Number(statesOfDrawAttributes.lineWidth);
+    contextRef.current.strokeStyle = statesOfDrawAttributes.color;
     contextRef.current.stroke();
+    setPaint([...paint , {
+      x : offsetX,
+      y : offsetY,
+      color : statesOfDrawAttributes.color,
+      lineWidth : statesOfDrawAttributes.lineWidth
+    }]);
   }
 
   const drawMobile = (event) => {
@@ -92,7 +107,7 @@ const Blank = () => {
     const offsetX = event.touches[0].clientX;
     const offsetY = event.touches[0].clientY - elemz.top;
     contextRef.current.lineTo(offsetX,offsetY);
-    contextRef.current.strokeStyle = 'red';
+    contextRef.current.strokeStyle = statesOfDrawAttributes.color;
     contextRef.current.stroke();
     // dot(offsetX,offsetY);
   }

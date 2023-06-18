@@ -1,10 +1,14 @@
 import { useContext,useEffect, useState } from "react"
 import { useRef } from "react"
-import { StateContext } from "../context/PaintingContext";
+import { SetCanvasReferenceContext, SetUpdatingPaintContext, StateContext, UpdatingEmitContext, UpdatingPaintContext } from "../context/PaintingContext";
 
 const Blank = () => {
 
   const statesOfDrawAttributes = useContext(StateContext);
+  const emitDrawing = useContext(UpdatingEmitContext);
+  const drawingUpdater = useContext(UpdatingPaintContext);
+  const setDrawingUpdater = useContext(SetUpdatingPaintContext);
+  const setCanvasRef = useContext(SetCanvasReferenceContext);
 
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
@@ -53,24 +57,46 @@ const Blank = () => {
     context.lineCap = "round";
     contextRef.current = context;
     fetchHistory();
-
+    setCanvasRef.current = context;
+    setCanvasRef.canvas = canvas;
   }, [])
   // useEffect(()=>{
   // },[paint])
   useEffect(()=>{
     history.forEach(element => {
+      contextRef.current.moveTo(element.x - 1,element.y - 1);
       contextRef.current.strokeStyle = element.color
       contextRef.current.lineWidth = element.lineWidth;
       contextRef.current.lineTo(element.x,element.y );
       contextRef.current.stroke();
     });
-  },[history])
+    drawingUpdater.forEach(element => {
+      // contextRef.current.beginPathn()
+      contextRef.current.moveTo(element.x - 1,element.y - 1);
+      contextRef.current.strokeStyle = element.color
+      contextRef.current.lineWidth = element.lineWidth;
+      contextRef.current.lineTo(element.x,element.y );
+      contextRef.current.stroke();
+    });
+    if(drawingUpdater.length !== 0){
+      setDrawingUpdater([])
+    }
+  },[history,drawingUpdater])
 
 
   // setInterval(async () => {
-  //      setPaint([])
-  //      console.log("done");
+  //   if(paint.length !== 0){
+  //     console.log(paint.length);
+  //     emitDrawing(paint)
+  //     setPaint([])
+  //   }
   // }, 500);
+  useEffect(()=>{
+    if(paint.length !== 0){
+      emitDrawing(paint)
+      setPaint([])
+    }
+  },[paint])
   const startDrawing = (event) => {
     const {offsetX, offsetY} = event.nativeEvent;
     contextRef.current.beginPath()
@@ -91,12 +117,13 @@ const Blank = () => {
     contextRef.current.lineTo(offsetX,offsetY);
     contextRef.current.lineWidth = Number(statesOfDrawAttributes.lineWidth);
     contextRef.current.strokeStyle = statesOfDrawAttributes.color;
+    contextRef.current.lineCap = "round";
     contextRef.current.stroke();
     setPaint([...paint , {
       x : offsetX,
       y : offsetY,
       color : statesOfDrawAttributes.color,
-      lineWidth : statesOfDrawAttributes.lineWidth
+      lineWidth : Number(statesOfDrawAttributes.lineWidth)
     }]);
   }
 
@@ -107,7 +134,14 @@ const Blank = () => {
     const offsetY = event.touches[0].clientY - elemz.top;
     contextRef.current.lineTo(offsetX,offsetY);
     contextRef.current.strokeStyle = statesOfDrawAttributes.color;
+    contextRef.current.lineCap = "round";
     contextRef.current.stroke();
+    setPaint([...paint , {
+      x : offsetX,
+      y : offsetY,
+      color : statesOfDrawAttributes.color,
+      lineWidth : Number(statesOfDrawAttributes.lineWidth)
+    }]);
     // dot(offsetX,offsetY);
   }
 

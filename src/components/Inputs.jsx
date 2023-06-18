@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react"
-import { SetStateContext, StateContext } from "../context/PaintingContext";
+import { ClearingFunctionContext, SetStateContext, StateContext } from "../context/PaintingContext";
 
 const Inputs = () => {
 
     const statesOfDrawAttributes = useContext(StateContext);
     const setStatesOfDrawAttributes = useContext(SetStateContext);
+    const setCanvasClear = useContext(ClearingFunctionContext);
 
     const [LocalAttribute,setLocalAttribute] = useState({
         color : localStorage.getItem('attributes') ? JSON.parse(localStorage.getItem('attributes')).color : '#000000',
@@ -37,6 +38,9 @@ const Inputs = () => {
             Stroke:
         </label>
         <input className="pl-2 w-10" name="number" type="number" value={LocalAttribute.lineWidth} onChange={(e)=>{setLocalAttribute({...LocalAttribute, lineWidth: e.target.value})}}id="number" />
+        </div>
+        <div className="flex flex-col gap-2 items-center w-full justify-center">
+       <button onClick={(e)=>setCanvasClear(e)} className=" border-2 p-2 bg-black text-white rounded-xl">Refresh</button>
         </div>
 
     </div>

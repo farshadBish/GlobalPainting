@@ -50,18 +50,13 @@ const Blank = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     resizeCanvas(canvas);
-    // context.fillRect(1000, 1000, context.canvas.width, context.canvas.height)
-    // canvas.style.height = `69.6vh`;
-    // canvas.style.width = `60vw`;
-    // context.scale(2,2);
     context.lineCap = "round";
     contextRef.current = context;
     fetchHistory();
     setCanvasRef.current = context;
     setCanvasRef.canvas = canvas;
   }, [])
-  // useEffect(()=>{
-  // },[paint])
+
   useEffect(()=>{
     history.forEach(element => {
       contextRef.current.moveTo(element.x - 1,element.y - 1);
@@ -83,14 +78,6 @@ const Blank = () => {
     }
   },[history,drawingUpdater])
 
-
-  // setInterval(async () => {
-  //   if(paint.length !== 0){
-  //     console.log(paint.length);
-  //     emitDrawing(paint)
-  //     setPaint([])
-  //   }
-  // }, 500);
   useEffect(()=>{
     if(paint.length !== 0){
       emitDrawing(paint)
@@ -142,7 +129,6 @@ const Blank = () => {
       color : statesOfDrawAttributes.color,
       lineWidth : Number(statesOfDrawAttributes.lineWidth)
     }]);
-    // dot(offsetX,offsetY);
   }
 
   return (

@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useRef, useState } from "react"
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import PropTypes from 'prop-types'
 import { socket } from '../socket.js';
 
@@ -17,39 +17,37 @@ export const PaintingProvider = ({children}) => {
     const canvasReference = useRef(null);
     const [isConnected, setIsConnected] = useState(socket.connected);
     const [paintingAttribute, setPaintingAttribute] = useState({
-        color : localStorage.getItem('attributes') ? JSON.parse(localStorage.getItem('attributes')).color : '#000000',
-        lineWidth: localStorage.getItem('attributes') ? JSON.parse(localStorage.getItem('attributes')).lineWidth : 8,
+        color : '#000000',
+        lineWidth: 8,
         backgroundImage:''
     })
 
     const clearingCanvasEvent = useCallback(() => {
-      // console.log(canvasReference.current.Width,canvasReference.current.height);
       canvasReference.current.clearRect(0, 0, canvasReference.canvas.width, canvasReference.canvas.height);
       canvasReference.current.beginPath()
     },[])
     
     const clearingCanvas = useCallback((e) => {
       e.preventDefault();
-      // console.log(canvasReference.current.Width,canvasReference.current.height);
       canvasReference.current.clearRect(0, 0, canvasReference.canvas.width, canvasReference.canvas.height);
       canvasReference.current.beginPath()
-      socket.emit('clear',(msg)=>console.log(msg))
+      socket.emit('clear')
         },[])
 
     useEffect(() => {
       function onConnect() {
         setIsConnected(true);
+        console.log(isConnected);
       }
       
       function onDisconnect() {
-        console.log('wtf');
         setIsConnected(false);
       }
-      socket.on('connect', setIsConnected);
+      socket.on('connect', onConnect);
       socket.on('disconnect', onDisconnect);
-      socket.on('update',(paint)=>{setPaintUpdater(paint)
+      socket.on('update',(paint)=>{setPaintUpdater(paint)})
       socket.on('clear',()=>clearingCanvasEvent())
-      })
+      
   
       return () => {
         socket.off('connect', onConnect);
@@ -58,16 +56,12 @@ export const PaintingProvider = ({children}) => {
     }, []);
 
     const updatePaint = useCallback((data)=>{
-      // console.log(data,'this is data');
-      console.log('im working',isConnected);
-        socket.emit('get-pub',data,(response)=>{console.log(response,'this is response');})
+        socket.emit('get-pub',data)
     },[])
 
-    // const clearPaint = useCallback(()=>{
-    //   // console.log(data,'this is data');
-    //   console.log('im working',isConnected);
-    //     socket.emit('clear');
-    // },[])
+    const value = useMemo(()=>({
+
+    }),[])
   return (
     <ClearingFunctionContext.Provider value={clearingCanvas}>
     <SetCanvasReferenceContext.Provider value={canvasReference}>

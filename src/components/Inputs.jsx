@@ -8,8 +8,8 @@ const Inputs = () => {
     const setCanvasClear = useContext(ClearingFunctionContext);
 
     const [LocalAttribute,setLocalAttribute] = useState({
-        color : localStorage.getItem('attributes') ? JSON.parse(localStorage.getItem('attributes')).color : '#000000',
-        lineWidth: localStorage.getItem('attributes') ? JSON.parse(localStorage.getItem('attributes')).lineWidth : 8,
+        color : '#000000',
+        lineWidth: 8,
     });
 
 

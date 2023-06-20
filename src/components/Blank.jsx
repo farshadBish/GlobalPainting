@@ -9,12 +9,10 @@ const Blank = () => {
   const drawingUpdater = useContext(UpdatingPaintContext);
   const setDrawingUpdater = useContext(SetUpdatingPaintContext);
   const setCanvasRef = useContext(SetCanvasReferenceContext);
-
-  const canvasRef = useRef(null)
-  const contextRef = useRef(null)
+  const canvasRef = useRef(null);
+  const contextRef = useRef(null);
   const [isDrawing,setIsDrawing] = useState(false);
-  const [history,setHistory] = useState([])
-  const [paint,setPaint] = useState([])
+  const [history,setHistory] = useState([]);
 
   const fetchHistory = async () => {
     try {
@@ -58,6 +56,7 @@ const Blank = () => {
   }, [])
 
   useEffect(()=>{
+    contextRef.current.beginPath()
     history.forEach(element => {
       contextRef.current.moveTo(element.x - 1,element.y - 1);
       contextRef.current.strokeStyle = element.color
@@ -65,25 +64,24 @@ const Blank = () => {
       contextRef.current.lineTo(element.x,element.y );
       contextRef.current.stroke();
     });
+    console.log(drawingUpdater.length);
     drawingUpdater.forEach(element => {
-      // contextRef.current.beginPathn()
       contextRef.current.moveTo(element.x - 1,element.y - 1);
       contextRef.current.strokeStyle = element.color
       contextRef.current.lineWidth = element.lineWidth;
       contextRef.current.lineTo(element.x,element.y );
       contextRef.current.stroke();
     });
+    contextRef.current.closePath();
+    if(history.length !== 0){
+      setHistory([])
+    }
     if(drawingUpdater.length !== 0){
       setDrawingUpdater([])
     }
   },[history,drawingUpdater])
 
-  useEffect(()=>{
-    if(paint.length !== 0){
-      emitDrawing(paint)
-      setPaint([])
-    }
-  },[paint])
+
   const startDrawing = (event) => {
     const {offsetX, offsetY} = event.nativeEvent;
     contextRef.current.beginPath()
@@ -91,11 +89,18 @@ const Blank = () => {
     setIsDrawing(true)
 
   }
+  let paintArray = [];
+
   const endDrawing= () => {
+    if(paintArray.length !== 0){
+      emitDrawing(paintArray)
+      paintArray = [];
+    }
+      // console.log('paint: ',paint,'history: ',history,'drawingUpdater: ',drawingUpdater,'emitDrawing',emitDrawing);
     contextRef.current.closePath();
     setIsDrawing(false);
-
   }
+
   const draw = ({nativeEvent}) => {
     if(!isDrawing){
       return 
@@ -106,12 +111,13 @@ const Blank = () => {
     contextRef.current.strokeStyle = statesOfDrawAttributes.color;
     contextRef.current.lineCap = "round";
     contextRef.current.stroke();
-    setPaint([...paint , {
+    paintArray.push({
       x : offsetX,
       y : offsetY,
       color : statesOfDrawAttributes.color,
       lineWidth : Number(statesOfDrawAttributes.lineWidth)
-    }]);
+    })
+
   }
 
   const drawMobile = (event) => {
@@ -123,12 +129,12 @@ const Blank = () => {
     contextRef.current.strokeStyle = statesOfDrawAttributes.color;
     contextRef.current.lineCap = "round";
     contextRef.current.stroke();
-    setPaint([...paint , {
+    paintArray.push({
       x : offsetX,
       y : offsetY,
       color : statesOfDrawAttributes.color,
       lineWidth : Number(statesOfDrawAttributes.lineWidth)
-    }]);
+    })
   }
 
   return (

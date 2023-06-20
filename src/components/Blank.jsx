@@ -56,23 +56,38 @@ const Blank = () => {
   }, [])
 
   useEffect(()=>{
-    contextRef.current.beginPath()
     history.forEach(element => {
-      contextRef.current.moveTo(element.x - 1,element.y - 1);
+      if(element.beginPath === true){
+        contextRef.current.beginPath();
+        contextRef.current.moveTo(element.x,element.y);
+      }
+      contextRef.current.lineCap = "round";
       contextRef.current.strokeStyle = element.color
       contextRef.current.lineWidth = element.lineWidth;
       contextRef.current.lineTo(element.x,element.y );
       contextRef.current.stroke();
+      if(element.closePath === true){
+        contextRef.current.closePath()
+      }
     });
-    console.log(drawingUpdater.length);
+      // contextRef.current.moveTo(element.x - 1,element.y - 1);
     drawingUpdater.forEach(element => {
-      contextRef.current.moveTo(element.x - 1,element.y - 1);
+      if(element.beginPath === true){
+        contextRef.current.beginPath();
+        contextRef.current.moveTo(element.x,element.y);
+      }
+      console.log(drawingUpdater,'drawing updater');
+      contextRef.current.lineCap = "round";
       contextRef.current.strokeStyle = element.color
       contextRef.current.lineWidth = element.lineWidth;
       contextRef.current.lineTo(element.x,element.y );
       contextRef.current.stroke();
+      if(element.closePath === true){
+        contextRef.current.closePath()
+      }
     });
-    contextRef.current.closePath();
+
+    // contextRef.current.closePath();
     if(history.length !== 0){
       setHistory([])
     }
@@ -84,6 +99,14 @@ const Blank = () => {
 
   const startDrawing = (event) => {
     const {offsetX, offsetY} = event.nativeEvent;
+    emitDrawing([{
+      x : offsetX,
+      y : offsetY,
+      color : statesOfDrawAttributes.color,
+      lineWidth : Number(statesOfDrawAttributes.lineWidth),
+      beginPath: true,
+      closePath: false,
+    }])
     contextRef.current.beginPath()
     contextRef.current.moveTo(offsetX,offsetY)
     setIsDrawing(true)
@@ -91,36 +114,46 @@ const Blank = () => {
   }
   let paintArray = [];
 
-  const endDrawing= () => {
-    if(paintArray.length !== 0){
-      emitDrawing(paintArray)
-      paintArray = [];
-    }
-      // console.log('paint: ',paint,'history: ',history,'drawingUpdater: ',drawingUpdater,'emitDrawing',emitDrawing);
+  const endDrawing= ({nativeEvent}) => {
+    const {offsetX, offsetY} = nativeEvent;
+    emitDrawing([{
+      x : offsetX,
+      y : offsetY,
+      color : statesOfDrawAttributes.color,
+      lineWidth : Number(statesOfDrawAttributes.lineWidth),
+      beginPath: false,
+      closePath: true,
+    }])
     contextRef.current.closePath();
     setIsDrawing(false);
   }
-
   const draw = ({nativeEvent}) => {
     if(!isDrawing){
       return 
     }
     const {offsetX , offsetY} = nativeEvent;
+    emitDrawing([{
+      x : offsetX,
+      y : offsetY,
+      color : statesOfDrawAttributes.color,
+      lineWidth : Number(statesOfDrawAttributes.lineWidth),
+      beginPath: false,
+      closePath: false,
+    }])
     contextRef.current.lineTo(offsetX,offsetY);
     contextRef.current.lineWidth = Number(statesOfDrawAttributes.lineWidth);
     contextRef.current.strokeStyle = statesOfDrawAttributes.color;
     contextRef.current.lineCap = "round";
     contextRef.current.stroke();
-    paintArray.push({
-      x : offsetX,
-      y : offsetY,
-      color : statesOfDrawAttributes.color,
-      lineWidth : Number(statesOfDrawAttributes.lineWidth)
-    })
-
+    // paintArray.push({
+    //   x : offsetX,
+    //   y : offsetY,
+    //   color : statesOfDrawAttributes.color,
+    //   lineWidth : Number(statesOfDrawAttributes.lineWidth)
+    // })
   }
 
-  const drawMobile = (event) => {
+    const drawMobile = (event) => {
     const elem = document.getElementById("paintingZone")
     const elemz = elem.getBoundingClientRect()
     const offsetX = event.touches[0].clientX;

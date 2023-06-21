@@ -127,6 +127,17 @@ const Blank = () => {
     contextRef.current.closePath();
     setIsDrawing(false);
   }
+  function throttle(callback, delay) {
+    var previousCall = new Date().getTime();
+    return function() {
+      var time = new Date().getTime();
+
+      if ((time - previousCall) >= delay) {
+        previousCall = time;
+        callback.apply(null, arguments);
+      }
+    };
+  }
   const draw = ({nativeEvent}) => {
     if(!isDrawing){
       return 
@@ -180,7 +191,7 @@ const Blank = () => {
     onTouchStart={startDrawing}
     onMouseUp={endDrawing}
     onTouchEnd={endDrawing}
-    onMouseMove={draw}
+    onMouseMove={throttle(draw,10)}
     onTouchMove={(e)=>drawMobile(e)}
     ref={canvasRef}
     ></canvas>

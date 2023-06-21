@@ -1,9 +1,9 @@
+/* eslint-disable no-undef */
 import { useContext,useEffect, useState } from "react"
 import { useRef } from "react"
 import { SetCanvasReferenceContext, SetUpdatingPaintContext, StateContext, UpdatingEmitContext, UpdatingPaintContext } from "../context/PaintingContext";
-
+import config from '../config.json'
 const Blank = () => {
-
   const statesOfDrawAttributes = useContext(StateContext);
   const emitDrawing = useContext(UpdatingEmitContext);
   const drawingUpdater = useContext(UpdatingPaintContext);
@@ -16,7 +16,8 @@ const Blank = () => {
 
   const fetchHistory = async () => {
     try {
-      let response = await fetch(`http://localhost:3000`, {
+      const {BASE_URL}=config
+      let response = await fetch(BASE_URL, {
         method: 'GET',
         headers: {
           "Content-Type": "application/json",

@@ -27,19 +27,20 @@ const Inputs = () => {
     // },[localStorage.getItem('attributes')])
 
   return (
-    <div className="fixed bottom-0 rounded-md flex w-[30rem] justify-between items-end bg-white pb-2">
+    <div className="fixed bottom-0 rounded-md flex w-[35rem] justify-between items-end bg-white pb-2">
         <div className="absolute top-0 flex justify-center w-full pt-0.5 mt-[-0.95rem]">
         <lord-icon
     src="https://cdn.lordicon.com/albqovim.json"
     trigger="hover"
     colors="primary:#e88c30"
-    style={{width:"32px"}}>
+    onClick={()=>{}}
+    style={{width:"32px",cursor:"pointer"}}>
 </lord-icon></div>
         <div className=" flex w-full justify-between items-end pt-4 px-4">
         <div className="flex items-center justify-center gap-2">
-            <img src={thinIcon} className="text-white hoverAnimation" height={39n} width={39n} alt="where am i" />
-            <img src={midIcon} className="text-white hoverAnimation" height={39n} width={39n} alt="where am i" />
-            <img src={thickIcon} className="text-white hoverAnimation" height={39n} width={39n} alt="where am i" />
+            <img src={thinIcon} className="text-white hoverAnimation" height={39} width={39} alt="where am i" />
+            <img src={midIcon} className="text-white hoverAnimation" height={39} width={39} alt="where am i" />
+            <img src={thickIcon} className="text-white hoverAnimation" height={39} width={39} alt="where am i" />
         </div>
         <div className="flex items-center justify-center gap-2 ">
             <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-white border-2 border-black"></div></span>
@@ -49,6 +50,16 @@ const Inputs = () => {
             <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-green-700"></div></span>
             <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-red-800"></div></span>
         </div>
+        <div className="flex hoverAnimationForReset">
+<lord-icon
+    src="https://cdn.lordicon.com/bdlkcgcr.json"
+    trigger="click"
+    colors="outline:#121331,primary:#ebe6ef"
+    style={{width:"40px",height:"40px"}}
+    onClick={setCanvasClear}
+    >
+</lord-icon>
+</div>
         </div>
     </div>
   )

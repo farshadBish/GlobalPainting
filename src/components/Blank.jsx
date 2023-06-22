@@ -77,7 +77,6 @@ const Blank = () => {
         contextRef.current.beginPath();
         contextRef.current.moveTo(element.x,element.y);
       }
-      console.log(drawingUpdater,'drawing updater');
       contextRef.current.lineCap = "round";
       contextRef.current.strokeStyle = element.color
       contextRef.current.lineWidth = element.lineWidth;

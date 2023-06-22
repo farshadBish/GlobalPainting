@@ -37,7 +37,6 @@ export const PaintingProvider = ({children}) => {
     useEffect(() => {
       function onConnect() {
         setIsConnected(true);
-        console.log(isConnected);
       }
       
       function onDisconnect() {

@@ -36,7 +36,7 @@
 }
 .main:after {
   content: "";
-  background-image: url("https://cdn.discordapp.com/attachments/1028757599266541648/1118551447169142824/farshad_Joyful_colors_background_picture_dba43fd7-9f81-483c-967e-bd61ed848360.png");
+  background-image: url("./assets/PaintingBackgrouind_1_1_1_90.webp");
   background-repeat: no-repeat;
   background-size: cover;
   z-index: 1;
@@ -50,11 +50,18 @@
 
 @media screen and (max-width: 840px) {
   .app {
-    padding: 0 3rem 0 3rem;
+    padding-right: 3rem;
+    padding-left: 3rem;
   }
 }
 @media screen and (max-width: 570px) {
   .app {
-    padding: 0 1rem 0 1rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
   }
+}
+
+
+.hoverAnimation{
+  @apply hover:bg-slate-200 pt-1 pb-1 pr-1 pl-1 rounded-md cursor-pointer transition-all duration-300
 }

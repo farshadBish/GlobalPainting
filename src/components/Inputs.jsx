@@ -1,5 +1,8 @@
 import { useContext, useEffect, useState } from "react"
 import { ClearingFunctionContext, SetStateContext, StateContext } from "../context/PaintingContext";
+import thinIcon from '../assets/icons8-squiggly-line-small.png'
+import midIcon from '../assets/icons8-squiggly-line-big.png'
+import thickIcon from '../assets/icons8-squiggly-line-md.png'
 
 const Inputs = () => {
 
@@ -24,27 +27,29 @@ const Inputs = () => {
     // },[localStorage.getItem('attributes')])
 
   return (
-    <div className=" absolute h-screen w-screen flex justify-end items-center">
-    <div className="bg-cyan-800 z-20 w-2/12 h-96 flex items-center rounded-s-full">
-    <div className="w-full h-full flex flex-col justify-center gap-2 items-center">
-        <div className="flex flex-col gap-2 w-full justify-center items-center">
-        <label htmlFor="colorInput" className="text-yellow-50">
-            Color:
-        </label>
-        <input className=" w-10" name="color" type="color" value={LocalAttribute.color} onChange={(e)=>{setLocalAttribute({...LocalAttribute, color: e.target.value})}}id="color" />
+    <div className="fixed bottom-0 rounded-md flex w-[30rem] justify-between items-end bg-white pb-2">
+        <div className="absolute top-0 flex justify-center w-full pt-0.5 mt-[-0.95rem]">
+        <lord-icon
+    src="https://cdn.lordicon.com/albqovim.json"
+    trigger="hover"
+    colors="primary:#e88c30"
+    style={{width:"32px"}}>
+</lord-icon></div>
+        <div className=" flex w-full justify-between items-end pt-4 px-4">
+        <div className="flex items-center justify-center gap-2">
+            <img src={thinIcon} className="text-white hoverAnimation" height={39n} width={39n} alt="where am i" />
+            <img src={midIcon} className="text-white hoverAnimation" height={39n} width={39n} alt="where am i" />
+            <img src={thickIcon} className="text-white hoverAnimation" height={39n} width={39n} alt="where am i" />
         </div>
-        <div className="flex flex-col gap-2 items-center w-full justify-center">
-        <label htmlFor="colorInput" className="text-yellow-50">
-            Stroke:
-        </label>
-        <input className="pl-2 w-10" name="number" type="number" value={LocalAttribute.lineWidth} onChange={(e)=>{setLocalAttribute({...LocalAttribute, lineWidth: e.target.value})}}id="number" />
+        <div className="flex items-center justify-center gap-2 ">
+            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-white border-2 border-black"></div></span>
+            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-black"></div></span>
+            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-blue-800"></div></span>
+            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-yellow-500"></div></span>
+            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-green-700"></div></span>
+            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-red-800"></div></span>
         </div>
-        <div className="flex flex-col gap-2 items-center w-full justify-center">
-       <button onClick={(e)=>setCanvasClear(e)} className=" border-2 p-2 bg-black text-white rounded-xl">Refresh</button>
         </div>
-
-    </div>
-    </div>
     </div>
   )
 }

@@ -182,7 +182,7 @@ const Blank = () => {
   }
 
   return (
-    <div className=" w-full h-[65vh]">
+    <div className=" w-full h-[75vh]">
     <canvas 
     className="bg-white w-full h-full rounded-sm shadow-2xl"
     id="paintingZone"

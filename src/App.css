@@ -63,9 +63,9 @@
 
 
 .hoverAnimation{
-  @apply hover:bg-slate-200 pt-1 pb-1 pr-1 pl-1 rounded-md cursor-pointer transition-all duration-300
+  @apply hover:bg-slate-200 hover:mt-[-10px] pt-1 pb-1 pr-1 pl-1 rounded-md cursor-pointer transition-all duration-300
 }
 
 .hoverAnimationForReset{
-  @apply hover:bg-slate-200  rounded-md cursor-pointer transition-all duration-300
+  @apply hover:bg-slate-200 rounded-md cursor-pointer transition-all duration-300
 }

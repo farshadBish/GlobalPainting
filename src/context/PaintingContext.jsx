@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { createContext, useCallback, useEffect,useRef, useState } from "react"
 import PropTypes from 'prop-types'
 import { socket } from '../socket.js';
 
@@ -57,10 +57,6 @@ export const PaintingProvider = ({children}) => {
     const updatePaint = useCallback((data)=>{
         socket.emit('get-pub',data)
     },[])
-
-    const value = useMemo(()=>({
-
-    }),[])
   return (
     <ClearingFunctionContext.Provider value={clearingCanvas}>
     <SetCanvasReferenceContext.Provider value={canvasReference}>

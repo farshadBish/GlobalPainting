@@ -43,12 +43,12 @@ const Inputs = () => {
             <img src={thickIcon} className="text-white hoverAnimation" height={39} width={39} alt="where am i" />
         </div>
         <div className="flex items-center justify-center gap-2 ">
-            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-white border-2 border-black"></div></span>
-            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-black"></div></span>
-            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-blue-800"></div></span>
-            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-yellow-500"></div></span>
-            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-green-700"></div></span>
-            <span className=" hoverAnimation"><div className="w-[32px] h-[32px] rounded-full bg-red-800"></div></span>
+            <span className=" hoverAnimation"><div onClick={() => LocalAttribute && setLocalAttribute({ ...LocalAttribute,color : '#ffffff'})} className="w-[32px] h-[32px] rounded-full bg-white border-2 border-black"></div></span>
+            <span className=" hoverAnimation"><div onClick={() => LocalAttribute && setLocalAttribute({ ...LocalAttribute,color : '#000000'})} className="w-[32px] h-[32px] rounded-full bg-black"></div></span>
+            <span className=" hoverAnimation"><div onClick={() => LocalAttribute && setLocalAttribute({ ...LocalAttribute,color : '#1E40AF'})} className="w-[32px] h-[32px] rounded-full bg-blue-800"></div></span>
+            <span className=" hoverAnimation"><div onClick={() => LocalAttribute && setLocalAttribute({ ...LocalAttribute,color : '#EAB308'})} className="w-[32px] h-[32px] rounded-full bg-yellow-500"></div></span>
+            <span className=" hoverAnimation"><div onClick={() => LocalAttribute && setLocalAttribute({ ...LocalAttribute,color : '#15803D'})} className="w-[32px] h-[32px] rounded-full bg-green-700"></div></span>
+            <span className=" hoverAnimation"><div onClick={() => LocalAttribute && setLocalAttribute({ ...LocalAttribute,color : '#991B1B'})} className="w-[32px] h-[32px] rounded-full bg-red-800"></div></span>
         </div>
         <div className="flex hoverAnimationForReset">
 <lord-icon
@@ -58,7 +58,7 @@ const Inputs = () => {
     style={{width:"40px",height:"40px"}}
     onClick={setCanvasClear}
     >
-</lord-icon>
+</lord-icon>    
 </div>
         </div>
     </div>

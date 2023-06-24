@@ -77,8 +77,8 @@
   @apply transition-opacity delay-[450ms] duration-500
 }
 .rotateAnimation{
-  @apply transition-transform rotate-180 duration-700
+  @apply transition-transform rotate-180 duration-500
 }
 .rotateAnimationBack{
-  @apply transition-transform duration-700
+  @apply transition-transform duration-500
 }

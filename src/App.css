@@ -63,9 +63,22 @@
 
 
 .hoverAnimation{
-  @apply hover:bg-slate-200 hover:mt-[-10px] pt-1 pb-1 pr-1 pl-1 rounded-md cursor-pointer transition-all duration-300
+  @apply hover:bg-slate-200 hover:mt-[-10px] pt-1 pb-1 pr-1 pl-1 rounded-md cursor-pointer transition-[background-color,margin-top] duration-300
 }
 
 .hoverAnimationForReset{
   @apply hover:bg-slate-200 rounded-md cursor-pointer transition-all duration-300
+}
+
+.inputsContainer{
+  @apply transition-[height,padding-bottom] duration-700 
+}
+.insideContainer{
+  @apply transition-opacity delay-[450ms] duration-500
+}
+.rotateAnimation{
+  @apply transition-transform rotate-180 duration-700
+}
+.rotateAnimationBack{
+  @apply transition-transform duration-700
 }

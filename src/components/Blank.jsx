@@ -2,10 +2,34 @@
 import { useContext,useEffect, useState } from "react"
 import { useRef } from "react"
 import { SetCanvasReferenceContext, SetUpdatingPaintContext, StateContext, UpdatingEmitContext, UpdatingPaintContext } from "../context/PaintingContext";
-import config from '../config.json'
+import config from '../config.json';
+import { socket } from '../socket.js';
+
+function drawLine(x0, y0, x1, y1, emit){
+  contextRef.current.beginPath();
+  contextRef.current.moveTo(x0, y0);
+  contextRef.current.lineTo(x1, y1);
+  contextRef.current.strokeStyle = statesOfDrawAttributes.color;
+  contextRef.current.lineWidth = Number(statesOfDrawAttributes.lineWidth);
+  contextRef.current.stroke();
+  contextRef.current.closePath();
+
+  if (!emit) { return; }
+  var w = canvasRef.width;
+  var h = canvasRef.height;
+
+  socket.emit('get-pub', {
+    x0: x0 / w,
+    y0: y0 / h,
+    x1: x1 / w,
+    y1: y1 / h,
+    color: statesOfDrawAttributes.color,
+    lineWidth : Number(statesOfDrawAttributes.lineWidth),
+  });
+}
 const Blank = () => {
-  const statesOfDrawAttributes = useContext(StateContext);
-  const emitDrawing = useContext(UpdatingEmitContext);
+  // const statesOfDrawAttributes = useContext(StateContext);
+  // const emitDrawing = useContext(UpdatingEmitContext);
   const drawingUpdater = useContext(UpdatingPaintContext);
   const setDrawingUpdater = useContext(SetUpdatingPaintContext);
   const setCanvasRef = useContext(SetCanvasReferenceContext);
@@ -29,7 +53,8 @@ const Blank = () => {
       console.log(error);
     }
   }
-
+  var current = {
+  };
   function resizeCanvas(canvas) {
     const { width, height } = canvas.getBoundingClientRect()
     
@@ -47,10 +72,9 @@ const Blank = () => {
 
   useEffect( () => {
     const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    resizeCanvas(canvas);
-    context.lineCap = "round";
-    contextRef.current = context;
+    contextRef.current = canvas.getContext("2d");
+    contextRef.current.lineCap = "round";
+    canvas && resizeCanvas(canvas);
     fetchHistory();
     setCanvasRef.current = context;
     setCanvasRef.canvas = canvas;
@@ -71,21 +95,9 @@ const Blank = () => {
         contextRef.current.closePath()
       }
     });
-      // contextRef.current.moveTo(element.x - 1,element.y - 1);
-    drawingUpdater.forEach(element => {
-      if(element.beginPath === true){
-        contextRef.current.beginPath();
-        contextRef.current.moveTo(element.x,element.y);
-      }
-      contextRef.current.lineCap = "round";
-      contextRef.current.strokeStyle = element.color
-      contextRef.current.lineWidth = element.lineWidth;
-      contextRef.current.lineTo(element.x,element.y );
-      contextRef.current.stroke();
-      if(element.closePath === true){
-        contextRef.current.closePath()
-      }
-    });
+        var w = canvas.width;
+    var h = canvas.height;
+    drawLine(drawingUpdater.x0 * w, drawingUpdater.y0 * h, drawingUpdater.x1 * w, drawingUpdater.y1 * h, drawingUpdater.color);
 
     // contextRef.current.closePath();
     if(history.length !== 0){
@@ -97,35 +109,15 @@ const Blank = () => {
   },[history,drawingUpdater])
 
 
-  const startDrawing = (event) => {
-    const {offsetX, offsetY} = event.nativeEvent;
-    emitDrawing([{
-      x : offsetX,
-      y : offsetY,
-      color : statesOfDrawAttributes.color,
-      lineWidth : Number(statesOfDrawAttributes.lineWidth),
-      beginPath: true,
-      closePath: false,
-    }])
-    contextRef.current.beginPath()
-    contextRef.current.moveTo(offsetX,offsetY)
-    setIsDrawing(true)
-
+  const startDrawing = (e) => {
+    drawing = true;
+    current.x = e.clientX||e.touches[0].clientX;
+    current.y = e.clientY||e.touches[0].clientY;
   }
-  let paintArray = [];
-
-  const endDrawing= ({nativeEvent}) => {
-    const {offsetX, offsetY} = nativeEvent;
-    emitDrawing([{
-      x : offsetX,
-      y : offsetY,
-      color : statesOfDrawAttributes.color,
-      lineWidth : Number(statesOfDrawAttributes.lineWidth),
-      beginPath: false,
-      closePath: true,
-    }])
-    contextRef.current.closePath();
+  const endDrawing= (e) => {
+    if (!isDrawing) { return; }
     setIsDrawing(false);
+    drawLine(current.x, current.y, e.clientX||e.touches[0].clientX, e.clientY||e.touches[0].clientY, true);
   }
   function throttle(callback, delay) {
     var previousCall = new Date().getTime();
@@ -138,47 +130,13 @@ const Blank = () => {
       }
     };
   }
-  const draw = ({nativeEvent}) => {
+  const draw = (e) => {
     if(!isDrawing){
       return 
     }
-    const {offsetX , offsetY} = nativeEvent;
-    emitDrawing([{
-      x : offsetX,
-      y : offsetY,
-      color : statesOfDrawAttributes.color,
-      lineWidth : Number(statesOfDrawAttributes.lineWidth),
-      beginPath: false,
-      closePath: false,
-    }])
-    contextRef.current.lineTo(offsetX,offsetY);
-    contextRef.current.lineWidth = Number(statesOfDrawAttributes.lineWidth);
-    contextRef.current.strokeStyle = statesOfDrawAttributes.color;
-    contextRef.current.lineCap = "round";
-    contextRef.current.stroke();
-    // paintArray.push({
-    //   x : offsetX,
-    //   y : offsetY,
-    //   color : statesOfDrawAttributes.color,
-    //   lineWidth : Number(statesOfDrawAttributes.lineWidth)
-    // })
-  }
-
-    const drawMobile = (event) => {
-    const elem = document.getElementById("paintingZone")
-    const elemz = elem.getBoundingClientRect()
-    const offsetX = event.touches[0].clientX;
-    const offsetY = event.touches[0].clientY - elemz.top;
-    contextRef.current.lineTo(offsetX,offsetY);
-    contextRef.current.strokeStyle = statesOfDrawAttributes.color;
-    contextRef.current.lineCap = "round";
-    contextRef.current.stroke();
-    paintArray.push({
-      x : offsetX,
-      y : offsetY,
-      color : statesOfDrawAttributes.color,
-      lineWidth : Number(statesOfDrawAttributes.lineWidth)
-    })
+    drawLine(current.x, current.y, e.clientX||e.touches[0].clientX, e.clientY||e.touches[0].clientY, current.color, true);
+    current.x = e.clientX||e.touches[0].clientX;
+    current.y = e.clientY||e.touches[0].clientY;
   }
 
   return (
@@ -187,12 +145,14 @@ const Blank = () => {
     className="bg-white w-full h-full rounded-sm shadow-2xl"
     id="paintingZone"
     style={{touchAction:'none'}}
-    onMouseDown={startDrawing}  
-    onTouchStart={startDrawing}
-    onMouseUp={endDrawing}
-    onTouchEnd={endDrawing}
-    onMouseMove={throttle(draw,10)}
-    onTouchMove={(e)=>drawMobile(e)}
+    onMouseDown={(e)=>startDrawing(e)}  
+    onTouchStart={(e)=>startDrawing(e)}
+    onMouseUp={(e)=>endDrawing(e)}
+    onTouchEnd={(e)=>endDrawing(e)}
+    onMouseOut={(e)=>endDrawing(e)}
+    onTouchCancel={(e)=>endDrawing(e)}
+    onMouseMove={(e)=>throttle(draw(e),10)}
+    onTouchMove={(e)=>throttle(draw(e),10)}
     ref={canvasRef}
     ></canvas>
         </div>

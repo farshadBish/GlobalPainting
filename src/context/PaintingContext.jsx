@@ -53,22 +53,16 @@ export const PaintingProvider = ({children}) => {
         socket.off('disconnect', onDisconnect);
       };
     }, []);
-
-    const updatePaint = useCallback((data)=>{
-        socket.emit('get-pub',data)
-    },[])
   return (
     <ClearingFunctionContext.Provider value={clearingCanvas}>
     <SetCanvasReferenceContext.Provider value={canvasReference}>
     <SetUpdatingPaintContext.Provider value={setPaintUpdater}>
     <UpdatingPaintContext.Provider value={paintUpdater}>
-    <UpdatingEmitContext.Provider value={updatePaint}>
     <StateContext.Provider value={paintingAttribute}>
         <SetStateContext.Provider value={setPaintingAttribute}>
         {children}
         </SetStateContext.Provider>
     </StateContext.Provider>
-    </UpdatingEmitContext.Provider>
     </UpdatingPaintContext.Provider>
     </SetUpdatingPaintContext.Provider>
     </SetCanvasReferenceContext.Provider>

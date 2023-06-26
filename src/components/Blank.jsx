@@ -1,34 +1,13 @@
 /* eslint-disable no-undef */
-import { useContext,useEffect, useState } from "react"
+import { useCallback, useContext,useEffect, useState } from "react"
 import { useRef } from "react"
 import { SetCanvasReferenceContext, SetUpdatingPaintContext, StateContext, UpdatingEmitContext, UpdatingPaintContext } from "../context/PaintingContext";
 import config from '../config.json';
 import { socket } from '../socket.js';
 
-function drawLine(x0, y0, x1, y1, emit){
-  contextRef.current.beginPath();
-  contextRef.current.moveTo(x0, y0);
-  contextRef.current.lineTo(x1, y1);
-  contextRef.current.strokeStyle = statesOfDrawAttributes.color;
-  contextRef.current.lineWidth = Number(statesOfDrawAttributes.lineWidth);
-  contextRef.current.stroke();
-  contextRef.current.closePath();
 
-  if (!emit) { return; }
-  var w = canvasRef.width;
-  var h = canvasRef.height;
-
-  socket.emit('get-pub', {
-    x0: x0 / w,
-    y0: y0 / h,
-    x1: x1 / w,
-    y1: y1 / h,
-    color: statesOfDrawAttributes.color,
-    lineWidth : Number(statesOfDrawAttributes.lineWidth),
-  });
-}
 const Blank = () => {
-  // const statesOfDrawAttributes = useContext(StateContext);
+   const statesOfDrawAttributes = useContext(StateContext);
   // const emitDrawing = useContext(UpdatingEmitContext);
   const drawingUpdater = useContext(UpdatingPaintContext);
   const setDrawingUpdater = useContext(SetUpdatingPaintContext);
@@ -76,9 +55,32 @@ const Blank = () => {
     contextRef.current.lineCap = "round";
     canvas && resizeCanvas(canvas);
     fetchHistory();
-    setCanvasRef.current = context;
+    setCanvasRef.current = canvas.getContext("2d");
     setCanvasRef.canvas = canvas;
   }, [])
+
+  const drawLine = useCallback((x0, y0, x1, y1, emit) => {
+    contextRef.current.beginPath();
+    contextRef.current.moveTo(x0, y0);
+    contextRef.current.lineTo(x1, y1);
+    contextRef.current.strokeStyle = statesOfDrawAttributes.color;
+    contextRef.current.lineWidth = Number(statesOfDrawAttributes.lineWidth);
+    contextRef.current.stroke();
+    contextRef.current.closePath();
+  
+    if (!emit) { return; }
+    var w = canvasRef.width;
+    var h = canvasRef.height;
+  
+    socket.emit('get-pub', {
+      x0: x0 / w,
+      y0: y0 / h,
+      x1: x1 / w,
+      y1: y1 / h,
+      color: statesOfDrawAttributes.color,
+      lineWidth : Number(statesOfDrawAttributes.lineWidth),
+    });
+  },[])
 
   useEffect(()=>{
     history.forEach(element => {
@@ -95,8 +97,8 @@ const Blank = () => {
         contextRef.current.closePath()
       }
     });
-        var w = canvas.width;
-    var h = canvas.height;
+    var w = canvasRef.current.width;
+    var h = canvasRef.current.height;
     drawLine(drawingUpdater.x0 * w, drawingUpdater.y0 * h, drawingUpdater.x1 * w, drawingUpdater.y1 * h, drawingUpdater.color);
 
     // contextRef.current.closePath();
@@ -110,7 +112,7 @@ const Blank = () => {
 
 
   const startDrawing = (e) => {
-    drawing = true;
+    setIsDrawing(true);
     current.x = e.clientX||e.touches[0].clientX;
     current.y = e.clientY||e.touches[0].clientY;
   }
@@ -134,7 +136,7 @@ const Blank = () => {
     if(!isDrawing){
       return 
     }
-    drawLine(current.x, current.y, e.clientX||e.touches[0].clientX, e.clientY||e.touches[0].clientY, current.color, true);
+    drawLine(current.x, current.y, e.clientX||e.touches[0].clientX, e.clientY||e.touches[0].clientY, true);
     current.x = e.clientX||e.touches[0].clientX;
     current.y = e.clientY||e.touches[0].clientY;
   }

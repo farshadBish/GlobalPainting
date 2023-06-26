@@ -80,7 +80,7 @@ const Blank = () => {
       color: statesOfDrawAttributes.color,
       lineWidth : Number(statesOfDrawAttributes.lineWidth),
     });
-  },[])
+  },[statesOfDrawAttributes])
 
   useEffect(()=>{
     history.forEach(element => {

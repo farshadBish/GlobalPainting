@@ -1,84 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-.app{
-  max-width: 1280px;
-  margin: 0 auto;
-  text-align: center;
-  position: relative;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  min-height: 100vh;
+@theme {
+  --font-satoshi: Satoshi, sans-serif;
+  --font-inter: Inter, sans-serif;
 }
-.main {
-  width: 100vw;
-  min-height: 100vh;
+
+body {
+  background-color: #1c1917;
+}
+
+/* Darkened painting behind the whole page */
+.backdrop {
   position: fixed;
-  display: flex;
-  justify-content: center;
-
+  inset: 0;
+  z-index: -1;
   pointer-events: none;
+  background:
+    linear-gradient(rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.4)),
+    url('./assets/PaintingBackgrouind_1_1_1_90.webp') center / cover no-repeat;
 }
 
-.main:before {
-  content: "";
-  z-index: 2;
-  position: absolute;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.404);
-  height: 100%;
-  top: 0;
-  opacity: 1;
-}
-.main:after {
-  content: "";
-  background-image: url("./assets/PaintingBackgrouind_1_1_1_90.webp");
-  background-repeat: no-repeat;
-  background-size: cover;
-  z-index: 1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  opacity: 1;
-  filter: invert(0%);
-}
-
-@media screen and (max-width: 840px) {
-  .app {
-    padding-right: 3rem;
-    padding-left: 3rem;
-  }
-}
-@media screen and (max-width: 570px) {
-  .app {
-    padding-right: 1rem;
-    padding-left: 1rem;
-  }
-}
-
-
-.hoverAnimation{
-  @apply hover:bg-slate-200 hover:mt-[-10px] pt-1 pb-1 pr-1 pl-1 rounded-md cursor-pointer transition-[background-color,margin-top] duration-300
-}
-
-.hoverAnimationForReset{
-  @apply hover:bg-slate-200 rounded-md cursor-pointer transition-all duration-300
-}
-
-.inputsContainer{
-  @apply transition-[height,padding-bottom] duration-700 
-}
-.insideContainer{
-  @apply transition-opacity delay-[450ms] duration-500
-}
-.rotateAnimation{
-  @apply transition-transform rotate-180 duration-500
-}
-.rotateAnimationBack{
-  @apply transition-transform duration-500
+.tool {
+  @apply cursor-pointer rounded-md p-1 transition duration-300 hover:-translate-y-1.5 hover:bg-slate-200 aria-pressed:bg-slate-200;
 }
